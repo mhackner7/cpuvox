@@ -1,0 +1,1 @@
+{"rustc":2833068300835136146,"features":"","declared_features":"","target":0,"profile":0,"path":0,"deps":[[13032533667549088696,"build_script_build",false,10594041191863079778]],"local":[{"Precalculated":"3.5.0"}],"rustflags":["-C","target-feature=+neon","-C","target-cpu=native"],"config":0,"compile_kind":0}
