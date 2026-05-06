@@ -8,6 +8,7 @@ use winit::event::WindowEvent;
 use winit::event_loop::{ActiveEventLoop, ControlFlow, EventLoop};
 use winit::window::{Window, WindowAttributes, WindowId};
 
+use crate::engine::Engine;
 use crate::rgb::Rgba;
 
 pub struct App<'a> {
@@ -19,13 +20,13 @@ pub struct App<'a> {
     render_scale: f32,
     render_width: usize,
     render_height: usize,
-    // scale_factor: u32,
-    // camera: Camera,
-    // raytracer : RayTracer,
-    // world : World,
-    // user_info : Info,
-    // cursor : Cursor,
-    //
+    engine: Engine, // scale_factor: u32,
+                    // camera: Camera,
+                    // raytracer : RayTracer,
+                    // world : World,
+                    // user_info : Info,
+                    // cursor : Cursor,
+                    //
 }
 
 impl App<'_> {
@@ -39,6 +40,7 @@ impl App<'_> {
             render_scale: 0.0,
             render_width: 0,
             render_height: 0,
+            engine: Engine::new(surface_texture, render_width, render_height, render_scale),
         }
     }
 
@@ -240,6 +242,15 @@ impl ApplicationHandler for App<'_> {
 
     fn exiting(&mut self, _event_loop: &ActiveEventLoop) {
         // save and close engine
+    }
+
+    fn device_event(
+        &mut self,
+        event_loop: &ActiveEventLoop,
+        device_id: winit::event::DeviceId,
+        event: winit::event::DeviceEvent,
+    ) {
+        self.engine.device_event(event);
     }
 }
 

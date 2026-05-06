@@ -12,7 +12,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         // .build_camera(samples_per_pixel, max_depth)
         .build_app();
 
-    let event_loop = App::new_event_loop()?;
+    let event_loop = App::new_event_loop()?.set_control_flow(winit::event_loop::ControlFlow::Poll);
     event_loop.run_app(&mut app)?;
 
     Ok(())

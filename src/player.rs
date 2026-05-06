@@ -1,4 +1,4 @@
-use crate::{camera::Camera, input::Input, vec3::Vec3, voxel::Material};
+use crate::{camera::Camera, input::InputHandler, vec3::Vec3, voxel::Material};
 use winit::keyboard::SmolStr;
 
 pub struct Player {

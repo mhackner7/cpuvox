@@ -10,11 +10,21 @@
 // 2. get terrain generation setup
 //
 
-use crate::{camera::Camera, input::Input, multigrid::MultiGrid, player::Player, world::World};
-use pixels::{Pixels, SurfaceTexture};
+use crate::{
+    camera::Camera,
+    input::{self, *},
+    multigrid::MultiGrid,
+    player::Player,
+    world::World,
+};
+use pixels::{Pixels, SurfaceTexture, wgpu::Device};
 use rayon::iter::{IndexedParallelIterator, IntoParallelIterator, ParallelIterator};
 use std::{default, sync::Arc};
-use winit::window::Window;
+use winit::{
+    event::{self, DeviceEvent, Event},
+    keyboard::PhysicalKey,
+    window::Window,
+};
 
 pub struct Engine {
     pub pixels: Pixels<'static>,
@@ -26,7 +36,7 @@ pub struct Engine {
 
     // pub player: Player,
     pub camera: Camera,
-    pub input: Input,
+    pub input_handler: InputHandler,
 }
 
 impl Engine {
@@ -44,7 +54,7 @@ impl Engine {
             // world: (),
             // player: (),
             camera: Default::default(),
-            input: Default::default(),
+            input_handler: Default::default(),
         }
     }
 
@@ -61,6 +71,30 @@ impl Engine {
     pub fn resize_buffer(&mut self, new_x: usize, new_y: usize) {}
 
     pub fn render(&mut self) {
+        self.camera.update();
         let pixel_00 = self.camera.pixel_00;
+    }
+
+    pub fn run_input_queue(&mut self) {}
+
+    pub fn device_event(&mut self, event: DeviceEvent) {
+        match event {
+            DeviceEvent::MouseMotion { delta } => {
+                self.input_handler.mouse_motion(&mut self.camera, delta);
+            }
+            DeviceEvent::MouseWheel { delta } => {
+                self.input_handler.mouse_wheel(delta);
+            }
+            DeviceEvent::Key(key) => {
+                if let PhysicalKey::Code(k) = key.physical_key {
+                    let k = PressedInput::Key(k);
+                    let ctrl = self.input_handler.keymap.find(k);
+                    if ctrl != Control::Invalid {
+                        self.input_handler.keyqueue.push_back((ctrl, key.state));
+                    }
+                }
+            }
+            _ => {}
+        }
     }
 }
